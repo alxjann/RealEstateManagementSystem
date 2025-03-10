@@ -9,22 +9,21 @@ package House;
  * @author Alex
  */
 public abstract class House {
-    private String houseType;
-    private int roomCount;
-    private int floorCount;
-    boolean hasSwimmingPool;
-    boolean hasGarage;
+    protected boolean hasSwimmingPool;
+    protected boolean hasGarage;
 
-    public House(String houseType, int roomCount, int floorCount, boolean hasSwimmingPool, boolean hasGarage) {
-        this.houseType = houseType;
-        this.roomCount = roomCount;
-        this.floorCount = floorCount;
+    public House(boolean hasSwimmingPool, boolean hasGarage) {
         this.hasSwimmingPool = hasSwimmingPool;
         this.hasGarage = hasGarage;
     }
     
-    public String getTypeName() {
-        return houseType;
+    public abstract String getTypeName();
+
+    public boolean hasSwimmingPool() {
+        return hasSwimmingPool;
     }
-    
+
+    public boolean hasGarage() {
+        return hasGarage;
+    }
 }

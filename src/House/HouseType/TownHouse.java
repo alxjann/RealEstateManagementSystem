@@ -12,8 +12,12 @@ import House.House;
  */
 public class TownHouse extends House {
  
-    public TownHouse(int roomCount, int floorCount, boolean hasSwimmingPool, boolean hasGarage) {
-        super("Townhouse", roomCount, floorCount, hasSwimmingPool, hasGarage);
+    public TownHouse(boolean hasSwimmingPool, boolean hasGarage) {
+        super(hasSwimmingPool, hasGarage);
     }
  
+    @Override
+    public String getTypeName() {
+        return "Townhouse";
+    }
 }

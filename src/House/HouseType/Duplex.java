@@ -12,9 +12,12 @@ import House.House;
  */
 public class Duplex extends House {
 
-    public Duplex(int roomCount, int floorCount, boolean hasSwimmingPool, boolean hasGarage) {
-        super("Duplex", roomCount, floorCount, hasSwimmingPool, hasGarage);
+    public Duplex(boolean hasSwimmingPool, boolean hasGarage) {
+        super(hasSwimmingPool, hasGarage);
     }
-
     
+    @Override
+    public String getTypeName() {
+        return "Duplex";
+    }
 }

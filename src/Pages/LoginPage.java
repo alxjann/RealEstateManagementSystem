@@ -4,6 +4,7 @@
  */
 package Pages;
 
+import Client.Client;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,6 +16,7 @@ public class LoginPage extends javax.swing.JFrame {
     /**
      * Creates new form LoginPage
      */
+    
     public LoginPage() {
         initComponents();
         setLocationRelativeTo(null);
@@ -29,77 +31,202 @@ public class LoginPage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTabbedPane = new javax.swing.JTabbedPane();
+        choicePage = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        loginAsClientBtn = new javax.swing.JButton();
+        loginAsAdminBtn = new javax.swing.JButton();
+        adminLogin = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        adminLoginBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        adminUser = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        adminPassword = new javax.swing.JPasswordField();
+        backBtn1 = new javax.swing.JButton();
+        clientLogin = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        clientLoginBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        userField = new javax.swing.JTextField();
-        passField = new javax.swing.JPasswordField();
-        loginBtn = new javax.swing.JButton();
+        clientName = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        clientPhoneNumber = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        clientEmail = new javax.swing.JTextField();
+        backBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel1.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
-        jLabel1.setText("DES REAL ESTATE");
+        jLabel4.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
+        jLabel4.setText("DES REAL ESTATE");
 
-        jLabel2.setText("User");
-
-        jLabel3.setText("Password");
-
-        loginBtn.setText("Login");
-        loginBtn.addActionListener(new java.awt.event.ActionListener() {
+        loginAsClientBtn.setText("LOGIN AS CLIENT");
+        loginAsClientBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginBtnActionPerformed(evt);
+                loginAsClientBtnActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(104, 104, 104)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(102, 102, 102))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(userField)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(passField, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(163, 163, 163)
-                        .addComponent(loginBtn)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        loginAsAdminBtn.setText("LOGIN AS ADMIN");
+        loginAsAdminBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginAsAdminBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout choicePageLayout = new javax.swing.GroupLayout(choicePage);
+        choicePage.setLayout(choicePageLayout);
+        choicePageLayout.setHorizontalGroup(
+            choicePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(choicePageLayout.createSequentialGroup()
+                .addGroup(choicePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(choicePageLayout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(choicePageLayout.createSequentialGroup()
+                        .addGap(119, 119, 119)
+                        .addGroup(choicePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(loginAsAdminBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(loginAsClientBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(95, 95, 95))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
-                .addComponent(jLabel1)
-                .addGap(54, 54, 54)
-                .addComponent(jLabel2)
+        choicePageLayout.setVerticalGroup(
+            choicePageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(choicePageLayout.createSequentialGroup()
+                .addGap(91, 91, 91)
+                .addComponent(jLabel4)
+                .addGap(125, 125, 125)
+                .addComponent(loginAsClientBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(passField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(loginBtn)
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addComponent(loginAsAdminBtn))
         );
+
+        jTabbedPane.addTab("tab7", choicePage);
+
+        adminLogin.setLayout(null);
+
+        jLabel5.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
+        jLabel5.setText("DES REAL ESTATE");
+        adminLogin.add(jLabel5);
+        jLabel5.setBounds(103, 91, 210, 25);
+
+        adminLoginBtn.setText("LOGIN");
+        adminLoginBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminLoginBtnActionPerformed(evt);
+            }
+        });
+        adminLogin.add(adminLoginBtn);
+        adminLoginBtn.setBounds(206, 308, 72, 30);
+
+        jLabel1.setText("Password");
+        adminLogin.add(jLabel1);
+        jLabel1.setBounds(103, 246, 59, 16);
+        adminLogin.add(adminUser);
+        adminUser.setBounds(103, 212, 195, 30);
+
+        jLabel2.setText("User");
+        adminLogin.add(jLabel2);
+        jLabel2.setBounds(103, 190, 37, 16);
+        adminLogin.add(adminPassword);
+        adminPassword.setBounds(103, 268, 195, 30);
+
+        backBtn1.setText("BACK");
+        backBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtn1ActionPerformed(evt);
+            }
+        });
+        adminLogin.add(backBtn1);
+        backBtn1.setBounds(116, 308, 72, 30);
+
+        jTabbedPane.addTab("tab2", adminLogin);
+
+        clientLogin.setLayout(null);
+
+        jLabel6.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
+        jLabel6.setText("DES REAL ESTATE");
+        clientLogin.add(jLabel6);
+        jLabel6.setBounds(103, 91, 210, 25);
+
+        clientLoginBtn.setText("LOGIN");
+        clientLoginBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clientLoginBtnActionPerformed(evt);
+            }
+        });
+        clientLogin.add(clientLoginBtn);
+        clientLoginBtn.setBounds(209, 326, 72, 30);
+
+        jLabel3.setText("Email");
+        clientLogin.add(jLabel3);
+        jLabel3.setBounds(103, 266, 87, 16);
+        clientLogin.add(clientName);
+        clientName.setBounds(103, 188, 195, 30);
+
+        jLabel7.setText("Name");
+        clientLogin.add(jLabel7);
+        jLabel7.setBounds(103, 166, 37, 16);
+
+        clientPhoneNumber.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clientPhoneNumberActionPerformed(evt);
+            }
+        });
+        clientLogin.add(clientPhoneNumber);
+        clientPhoneNumber.setBounds(103, 238, 195, 30);
+
+        jLabel8.setText("Phone Number");
+        clientLogin.add(jLabel8);
+        jLabel8.setBounds(103, 216, 87, 16);
+        clientLogin.add(clientEmail);
+        clientEmail.setBounds(103, 286, 195, 30);
+
+        backBtn.setText("BACK");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtnActionPerformed(evt);
+            }
+        });
+        clientLogin.add(backBtn);
+        backBtn.setBounds(119, 326, 72, 30);
+
+        jTabbedPane.addTab("tab2", clientLogin);
+
+        getContentPane().add(jTabbedPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -38, 408, 530));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
+    private void clientPhoneNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientPhoneNumberActionPerformed
         // TODO add your handling code here:
-        String user = userField.getText();
-        String pass = new String(passField.getPassword());
+    }//GEN-LAST:event_clientPhoneNumberActionPerformed
+
+    private void backBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtn1ActionPerformed
+        // TODO add your handling code here:
+        jTabbedPane.setSelectedIndex(0); 
+    }//GEN-LAST:event_backBtn1ActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        // TODO add your handling code here:
+        jTabbedPane.setSelectedIndex(0); 
+    }//GEN-LAST:event_backBtnActionPerformed
+
+    private void loginAsAdminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginAsAdminBtnActionPerformed
+        // TODO add your handling code here:
+        jTabbedPane.setSelectedIndex(1);
+    }//GEN-LAST:event_loginAsAdminBtnActionPerformed
+
+    private void loginAsClientBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginAsClientBtnActionPerformed
+        // TODO add your handling code here:
+        jTabbedPane.setSelectedIndex(2);
+    }//GEN-LAST:event_loginAsClientBtnActionPerformed
+
+    private void adminLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminLoginBtnActionPerformed
+        // TODO add your handling code here:
+        String user = adminUser.getText();
+        String pass = String.valueOf(adminPassword.getPassword());
 
         if (user.equals("admin") && pass.equals("admin")) {
             new AdminPage().setVisible(true);
@@ -107,9 +234,25 @@ public class LoginPage extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Invalid username or password!");
         }
-    }//GEN-LAST:event_loginBtnActionPerformed
+    }//GEN-LAST:event_adminLoginBtnActionPerformed
 
-    /**
+    private void clientLoginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientLoginBtnActionPerformed
+        // TODO add your handling code here:
+        
+        String name = clientName.getText();
+        String phoneNumber = clientPhoneNumber.getText();
+        String email = clientEmail.getText();
+        
+        if (name.isEmpty() || phoneNumber.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Client.createClient(name, phoneNumber, email, true);
+            new ClientPage().setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_clientLoginBtnActionPerformed
+
+    /*
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -145,11 +288,28 @@ public class LoginPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel adminLogin;
+    private javax.swing.JButton adminLoginBtn;
+    private javax.swing.JPasswordField adminPassword;
+    private javax.swing.JTextField adminUser;
+    private javax.swing.JButton backBtn;
+    private javax.swing.JButton backBtn1;
+    private javax.swing.JPanel choicePage;
+    private javax.swing.JTextField clientEmail;
+    private javax.swing.JPanel clientLogin;
+    private javax.swing.JButton clientLoginBtn;
+    private javax.swing.JTextField clientName;
+    private javax.swing.JTextField clientPhoneNumber;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JButton loginBtn;
-    private javax.swing.JPasswordField passField;
-    private javax.swing.JTextField userField;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JButton loginAsAdminBtn;
+    private javax.swing.JButton loginAsClientBtn;
     // End of variables declaration//GEN-END:variables
 }

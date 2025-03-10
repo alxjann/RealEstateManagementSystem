@@ -4,7 +4,10 @@
  */
 package Pages;
 
+import Subdivision.Subdivision;
 import java.awt.Dimension;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,12 +18,164 @@ public class AdminPage extends javax.swing.JFrame {
     /**
      * Creates new form HomePage
      */
+    Subdivision subdivision = Subdivision.getInstance();
+
+    
     public AdminPage() {
         initComponents();
         setPreferredSize(new Dimension(1056, 630)); 
         setResizable(false);
         setLocationRelativeTo(null);
+        String[] columnNames = {"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS" , "CLIENT"};
+
+        Object[][] data = subdivision.getTableData(true);
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        
+        
+        
+        jTable1.setModel(model);
+        
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable1.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable1.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(7).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(8).setPreferredWidth(100);
+        salesPage();
     }
+    
+    private void salesPage() {
+        jTable5.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && jTable5.getSelectedRow() != -1) {
+                int selectedRow = jTable5.getSelectedRow();
+                salesClientId.setText(jTable5.getValueAt(selectedRow, 0).toString());
+            }
+        });
+        
+        jTable6.getSelectionModel().addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting() && jTable6.getSelectedRow() != -1) {
+                int selectedRow = jTable6.getSelectedRow();
+                salesLotId.setText(jTable6.getValueAt(selectedRow, 0).toString());
+            }
+        });
+    }
+    
+    private void loadData() {
+        
+        String[] columnNames = {"SALES ID", "CLIENT ID", "LOT ID", "STATUS"};
+
+        Object[][] data = subdivision.getSalesTableData();
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+
+        jTable4.setModel(model);
+        
+        jTable4.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable4.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable4.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable4.getColumnModel().getColumn(3).setPreferredWidth(80);
+        
+        
+        String[] columnNames2 = {"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS"};
+
+        Object[][] data2 = subdivision.getTableData(true);
+
+        DefaultTableModel model2 = new DefaultTableModel(data2, columnNames2);
+        
+        
+        
+        jTable6.setModel(model2);
+        
+        jTable6.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable6.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable6.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable6.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable6.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable6.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable6.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable6.getColumnModel().getColumn(7).setPreferredWidth(100);
+        
+        
+        String[] columnNames3 = {"ID", "CLIENT", "PHONE", "EMAIL", "LOT COUNT"};
+
+        Object[][] data3 = subdivision.getClientTableData();
+
+        DefaultTableModel model3 = new DefaultTableModel(data3, columnNames3);
+        
+        
+        
+        jTable5.setModel(model3);
+        
+        jTable5.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable5.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable5.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable5.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable5.getColumnModel().getColumn(4).setPreferredWidth(130);
+    }
+    
+    private void populateTableFiltered() {
+        
+        String typeInput = (String) viewTypeComboBox.getSelectedItem();
+        String sizeInput = viewSizeTextField.getText().trim();
+        String priceInput = viewPriceTextField.getText().trim();
+        String blockInput = (String) viewBlockComboBox.getSelectedItem();
+        String lotInput = (String) viewLotComboBox.getSelectedItem();
+        
+        Integer blockNumber = (blockInput == null || blockInput.trim().isEmpty()) ? null : Integer.parseInt(blockInput);
+        Integer lotNumber = (lotInput == null || lotInput.trim().isEmpty()) ? null : Integer.parseInt(lotInput);
+        String houseType = (typeInput == null || typeInput.trim().isEmpty()) ? null : typeInput;
+        Double minSize = (sizeInput.isEmpty() || sizeInput.trim().isEmpty()) ? null : Double.parseDouble(sizeInput);
+        Double minPrice = (priceInput.isEmpty() || priceInput.trim().isEmpty()) ? null : Double.parseDouble(priceInput);
+        boolean hasSwimmingPool = viewPoolCheckBox.isSelected();
+        boolean hasGarage = viewGarageCheckBox.isSelected();
+
+        
+        if (blockNumber == null && lotNumber == null && houseType == null && minSize == null && minPrice == null 
+            && !hasSwimmingPool && !hasGarage) {
+            populateTable();
+            return;
+        }
+
+        Object[][] filteredData = subdivision.getFilteredTableData(blockNumber, lotNumber, houseType, minSize, minPrice, hasSwimmingPool, hasGarage, true);
+
+        DefaultTableModel model = new DefaultTableModel(filteredData, new String[]{"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS", "CLIENT"});
+        jTable2.setModel(model);
+        
+        jTable2.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable2.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable2.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(7).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(8).setPreferredWidth(100);
+    }
+    
+    private void populateTable() {
+        String[] columnNames = {"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS", "CLIENT"};
+
+        Object[][] data = subdivision.getTableData(true);
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        
+        jTable2.setModel(model);
+        
+        jTable2.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable2.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable2.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable2.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(7).setPreferredWidth(100);
+        jTable2.getColumnModel().getColumn(8).setPreferredWidth(100);
+        
+    } 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -47,8 +202,6 @@ public class AdminPage extends javax.swing.JFrame {
         managePropertyPriceLabel = new javax.swing.JLabel();
         managePropertyPriceTextField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        managePropertyIdLabel = new javax.swing.JLabel();
-        managePropertyIdTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         managePropertyBlockLabel = new javax.swing.JLabel();
@@ -56,42 +209,35 @@ public class AdminPage extends javax.swing.JFrame {
         managePropertyLotLabel = new javax.swing.JLabel();
         managePropertyLotTextField = new javax.swing.JTextField();
         managePropertyRemoveBtn = new javax.swing.JButton();
-        managePropertyEditBtn = new javax.swing.JButton();
         managePropertyAddBtn = new javax.swing.JButton();
         managePropertyViewTableBtn = new javax.swing.JButton();
         managePropertyAddFeatLabel = new javax.swing.JLabel();
-        managePropertyBackyardCheckBox = new javax.swing.JCheckBox();
         managePropertySwimmingPoolCheckBox = new javax.swing.JCheckBox();
         managePropertyGarageCheckBox = new javax.swing.JCheckBox();
         viewPropertyTab = new javax.swing.JPanel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        viewTypeComboBox = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jComboBox4 = new javax.swing.JComboBox<>();
+        viewBlockComboBox = new javax.swing.JComboBox<>();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        viewSizeTextField = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        viewPriceTextField = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jButton10 = new javax.swing.JButton();
-        jTextField8 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        jButton15 = new javax.swing.JButton();
+        viewSearchBtn = new javax.swing.JButton();
         jLabel17 = new javax.swing.JLabel();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox6 = new javax.swing.JCheckBox();
+        viewGarageCheckBox = new javax.swing.JCheckBox();
+        viewPoolCheckBox = new javax.swing.JCheckBox();
+        viewResetBtn = new javax.swing.JButton();
+        viewLotComboBox = new javax.swing.JComboBox<>();
         manageClientTab = new javax.swing.JPanel();
         jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
         jButton9 = new javax.swing.JButton();
         jLabel22 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
         jTextField12 = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -101,17 +247,13 @@ public class AdminPage extends javax.swing.JFrame {
         jTextField14 = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
         jTextField15 = new javax.swing.JTextField();
-        jLabel29 = new javax.swing.JLabel();
-        jTextField17 = new javax.swing.JTextField();
         salesTab = new javax.swing.JPanel();
-        jLabel28 = new javax.swing.JLabel();
-        jTextField18 = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
         jLabel31 = new javax.swing.JLabel();
-        jTextField19 = new javax.swing.JTextField();
+        salesClientId = new javax.swing.JTextField();
         jLabel32 = new javax.swing.JLabel();
-        jTextField20 = new javax.swing.JTextField();
+        salesLotId = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -121,10 +263,9 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel36 = new javax.swing.JLabel();
         jLabel37 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
-        jComboBox8 = new javax.swing.JComboBox<>();
-        jButton12 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
+        salesStatus = new javax.swing.JComboBox<>();
+        salesAddBtn = new javax.swing.JButton();
+        salesRemoveBtn = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
 
@@ -210,7 +351,7 @@ public class AdminPage extends javax.swing.JFrame {
 
         managePropertyTab.setBackground(new java.awt.Color(232, 235, 241));
 
-        managePropertyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Land", "Commercial", "Residential" }));
+        managePropertyTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bungalow", "Duplex", "TownHouse" }));
 
         managePropertyTypeLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         managePropertyTypeLabel.setText("Type:");
@@ -228,11 +369,6 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
         jLabel5.setText("MANAGE PROPERTIES");
-
-        managePropertyIdLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        managePropertyIdLabel.setText("ID:");
-
-        managePropertyIdTextField.setText(" ");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -315,14 +451,6 @@ public class AdminPage extends javax.swing.JFrame {
             }
         });
 
-        managePropertyEditBtn.setBackground(new java.awt.Color(51, 153, 255));
-        managePropertyEditBtn.setText("EDIT");
-        managePropertyEditBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                managePropertyEditBtnActionPerformed(evt);
-            }
-        });
-
         managePropertyAddBtn.setBackground(new java.awt.Color(0, 204, 51));
         managePropertyAddBtn.setText("ADD");
         managePropertyAddBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -341,13 +469,6 @@ public class AdminPage extends javax.swing.JFrame {
 
         managePropertyAddFeatLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         managePropertyAddFeatLabel.setText("Additional Features:");
-
-        managePropertyBackyardCheckBox.setText("Backyard");
-        managePropertyBackyardCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                managePropertyBackyardCheckBoxActionPerformed(evt);
-            }
-        });
 
         managePropertySwimmingPoolCheckBox.setText("Swimming Pool");
         managePropertySwimmingPoolCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -377,13 +498,9 @@ public class AdminPage extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(managePropertySizeTextField))
                             .addGroup(managePropertyTabLayout.createSequentialGroup()
-                                .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(managePropertyTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(managePropertyIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(managePropertyTypeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(managePropertyTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(managePropertyIdTextField)))
+                                .addComponent(managePropertyTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(managePropertyTabLayout.createSequentialGroup()
                                 .addComponent(managePropertyPriceLabel)
                                 .addGap(18, 18, 18)
@@ -396,17 +513,15 @@ public class AdminPage extends javax.swing.JFrame {
                                 .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(managePropertyLotTextField)
                                     .addComponent(managePropertyBlockComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(managePropertyRemoveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(managePropertyTabLayout.createSequentialGroup()
                                 .addComponent(managePropertyAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(managePropertyEditBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(managePropertyRemoveBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(managePropertyAddFeatLabel)
-                            .addGroup(managePropertyTabLayout.createSequentialGroup()
-                                .addComponent(managePropertyBackyardCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(managePropertyGarageCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(managePropertySwimmingPoolCheckBox))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, managePropertyTabLayout.createSequentialGroup()
+                                .addComponent(managePropertySwimmingPoolCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(managePropertyGarageCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(managePropertyViewTableBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -414,7 +529,7 @@ public class AdminPage extends javax.swing.JFrame {
                     .addGroup(managePropertyTabLayout.createSequentialGroup()
                         .addGap(303, 303, 303)
                         .addComponent(jLabel5)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         managePropertyTabLayout.setVerticalGroup(
             managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -424,10 +539,7 @@ public class AdminPage extends javax.swing.JFrame {
                 .addGap(65, 65, 65)
                 .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(managePropertyTabLayout.createSequentialGroup()
-                        .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(managePropertyIdLabel)
-                            .addComponent(managePropertyIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(32, 32, 32)
                         .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(managePropertyTypeLabel)
                             .addComponent(managePropertyTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -451,16 +563,12 @@ public class AdminPage extends javax.swing.JFrame {
                         .addComponent(managePropertyAddFeatLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(managePropertyBackyardCheckBox)
-                            .addComponent(managePropertyGarageCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(managePropertySwimmingPoolCheckBox)
-                        .addGap(18, 18, 18)
+                            .addComponent(managePropertyGarageCheckBox)
+                            .addComponent(managePropertySwimmingPoolCheckBox))
+                        .addGap(44, 44, 44)
                         .addGroup(managePropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(managePropertyAddBtn)
-                            .addComponent(managePropertyEditBtn))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(managePropertyRemoveBtn)
+                            .addComponent(managePropertyRemoveBtn))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -472,7 +580,7 @@ public class AdminPage extends javax.swing.JFrame {
 
         viewPropertyTab.setBackground(new java.awt.Color(232, 235, 241));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Land", "Commercial", "Residential" }));
+        viewTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Bungalow", "Duplex", "TownHouse" }));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel9.setText("Block:");
@@ -480,7 +588,7 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel10.setText("Type:");
 
-        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5" }));
+        viewBlockComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "1", "2", "3", "4", "5" }));
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel11.setText("Size (sqr m):");
@@ -488,78 +596,63 @@ public class AdminPage extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel12.setText("Lot:");
 
-        jTextField5.setText(" ");
-
-        jTextField6.setText(" ");
+        viewSizeTextField.setText(" ");
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel13.setText("Price (php):");
 
-        jTextField7.setText(" ");
+        viewPriceTextField.setText(" ");
 
         jLabel14.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(51, 51, 51));
         jLabel14.setText("VIEW PROPERTIES");
 
-        jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel15.setText("ID:");
-
-        jButton10.setBackground(new java.awt.Color(242, 243, 133));
-        jButton10.setText("VIEW TABLE");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-
-        jTextField8.setText(" ");
-
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "TYPE", "BLOCK", "LOT", "SIZE", "PRICE", "OWNER", "STATUS"
+                "ID", "BLOCK", "LOT", "TYPE", "AMENITIES", "SIZE", "PRICE", "OWNER", "STATUS"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -568,147 +661,128 @@ public class AdminPage extends javax.swing.JFrame {
         });
         jTable2.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setResizable(false);
-            jTable2.getColumnModel().getColumn(1).setResizable(false);
-            jTable2.getColumnModel().getColumn(2).setResizable(false);
-            jTable2.getColumnModel().getColumn(3).setResizable(false);
-            jTable2.getColumnModel().getColumn(4).setResizable(false);
-            jTable2.getColumnModel().getColumn(5).setResizable(false);
-        }
 
-        jButton15.setBackground(new java.awt.Color(204, 204, 204));
-        jButton15.setText("SEARCH");
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
+        viewSearchBtn.setBackground(new java.awt.Color(204, 204, 204));
+        viewSearchBtn.setText("SEARCH");
+        viewSearchBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
+                viewSearchBtnActionPerformed(evt);
             }
         });
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel17.setText("Additional Features:");
 
-        jCheckBox4.setText("Backyard");
-        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+        viewGarageCheckBox.setText("Garage");
+        viewGarageCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox4ActionPerformed(evt);
+                viewGarageCheckBoxActionPerformed(evt);
             }
         });
 
-        jCheckBox5.setText("Garage");
-        jCheckBox5.addActionListener(new java.awt.event.ActionListener() {
+        viewPoolCheckBox.setText("Swimming Pool");
+        viewPoolCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox5ActionPerformed(evt);
+                viewPoolCheckBoxActionPerformed(evt);
             }
         });
 
-        jCheckBox6.setText("Swimming Pool");
-        jCheckBox6.addActionListener(new java.awt.event.ActionListener() {
+        viewResetBtn.setBackground(new java.awt.Color(204, 204, 204));
+        viewResetBtn.setText("RESET");
+        viewResetBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox6ActionPerformed(evt);
+                viewResetBtnActionPerformed(evt);
             }
         });
+
+        viewLotComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
 
         javax.swing.GroupLayout viewPropertyTabLayout = new javax.swing.GroupLayout(viewPropertyTab);
         viewPropertyTab.setLayout(viewPropertyTabLayout);
         viewPropertyTabLayout.setHorizontalGroup(
             viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, viewPropertyTabLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
+            .addGroup(viewPropertyTabLayout.createSequentialGroup()
                 .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                        .addGap(272, 272, 272)
+                        .addComponent(jLabel14))
+                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 810, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField5))
-                            .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField8)))
-                            .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
+                                .addComponent(viewResetBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                                .addComponent(viewSearchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                                        .addComponent(jLabel12)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(viewLotComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(51, 51, 51)
+                                        .addComponent(jLabel11)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(viewSizeTextField))
+                                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(viewBlockComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(51, 51, 51)
+                                        .addComponent(jLabel13)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(viewPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
                                 .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField6)
-                                    .addComponent(jComboBox4, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(6, 6, 6)
+                                        .addComponent(viewTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel17)
                                     .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                                        .addComponent(jCheckBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jCheckBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jCheckBox6))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(27, 27, 27))
-                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17))
-            .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                .addGap(301, 301, 301)
-                .addComponent(jLabel14)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(viewPoolCheckBox)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(viewGarageCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addGap(20, 20, 20))
         );
         viewPropertyTabLayout.setVerticalGroup(
             viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(viewPropertyTabLayout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addComponent(jLabel14)
-                .addGap(65, 65, 65)
+                .addGap(43, 43, 43)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(viewBlockComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel13)
+                        .addComponent(viewPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel10)
+                    .addComponent(viewTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(viewPropertyTabLayout.createSequentialGroup()
-                        .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel15)
-                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(12, 12, 12)
                         .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addComponent(viewSizeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))
-                        .addGap(18, 18, 18)
-                        .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(21, 21, 21)
+                            .addComponent(viewPoolCheckBox)
+                            .addComponent(viewGarageCheckBox))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(viewPropertyTabLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(viewLotComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(viewPropertyTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jCheckBox4)
-                            .addComponent(jCheckBox5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox6)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton15))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton10)
-                .addContainerGap(51, Short.MAX_VALUE))
+                            .addComponent(viewResetBtn)
+                            .addComponent(viewSearchBtn))
+                        .addContainerGap(42, Short.MAX_VALUE))))
         );
 
         jTabbedPane.addTab("tab2", viewPropertyTab);
@@ -720,14 +794,6 @@ public class AdminPage extends javax.swing.JFrame {
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
-            }
-        });
-
-        jButton8.setBackground(new java.awt.Color(51, 153, 255));
-        jButton8.setText("EDIT");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
             }
         });
 
@@ -745,14 +811,6 @@ public class AdminPage extends javax.swing.JFrame {
 
         jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel22.setText("First Name:");
-
-        jButton11.setBackground(new java.awt.Color(242, 243, 133));
-        jButton11.setText("VIEW FULL TABLE");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
 
         jTextField12.setText(" ");
 
@@ -823,11 +881,6 @@ public class AdminPage extends javax.swing.JFrame {
 
         jTextField15.setText(" ");
 
-        jLabel29.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel29.setText("ID:");
-
-        jTextField17.setText(" ");
-
         javax.swing.GroupLayout manageClientTabLayout = new javax.swing.GroupLayout(manageClientTab);
         manageClientTab.setLayout(manageClientTabLayout);
         manageClientTabLayout.setHorizontalGroup(
@@ -849,22 +902,15 @@ public class AdminPage extends javax.swing.JFrame {
                                         .addComponent(jTextField14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jTextField15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGroup(manageClientTabLayout.createSequentialGroup()
-                                    .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel22)
-                                        .addComponent(jLabel29))
+                                    .addComponent(jLabel22)
                                     .addGap(31, 31, 31)
-                                    .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(manageClientTabLayout.createSequentialGroup()
                                 .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton11)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(manageClientTabLayout.createSequentialGroup()
                         .addGap(301, 301, 301)
                         .addComponent(jLabel21)))
@@ -879,10 +925,7 @@ public class AdminPage extends javax.swing.JFrame {
                 .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(manageClientTabLayout.createSequentialGroup()
-                        .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel29)
-                            .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(28, 28, 28)
                         .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel22)
                             .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -902,69 +945,61 @@ public class AdminPage extends javax.swing.JFrame {
                         .addGroup(manageClientTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton9)
                             .addComponent(jButton7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton8)
-                        .addGap(0, 130, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton11)
-                .addGap(119, 119, 119))
+                        .addGap(0, 165, Short.MAX_VALUE)))
+                .addGap(154, 154, 154))
         );
 
         jTabbedPane.addTab("tab3", manageClientTab);
 
         salesTab.setBackground(new java.awt.Color(232, 235, 241));
-
-        jLabel28.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel28.setText("Sales ID:");
-
-        jTextField18.setText(" ");
+        salesTab.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "CLIENT", "TYPE", "BLOCK", "LOT"
+                "SALES ID", "CLIENT ID", "LOT ID"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -974,74 +1009,77 @@ public class AdminPage extends javax.swing.JFrame {
         jTable4.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTable4);
         if (jTable4.getColumnModel().getColumnCount() > 0) {
-            jTable4.getColumnModel().getColumn(1).setResizable(false);
+            jTable4.getColumnModel().getColumn(0).setResizable(false);
             jTable4.getColumnModel().getColumn(2).setResizable(false);
-            jTable4.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        jLabel31.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel31.setText("Owner ID:");
+        salesTab.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 651, 130));
 
-        jTextField19.setText(" ");
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel31.setText("Client ID:");
+        salesTab.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
+        salesTab.add(salesClientId, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 80, -1));
 
         jLabel32.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel32.setText("Property ID:");
-
-        jTextField20.setText(" ");
+        jLabel32.setText("Lot ID:");
+        salesTab.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
+        salesTab.add(salesLotId, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, 80, -1));
 
         jLabel33.setFont(new java.awt.Font("Montserrat Black", 0, 20)); // NOI18N
         jLabel33.setForeground(new java.awt.Color(51, 51, 51));
         jLabel33.setText("MANAGE SALES");
+        salesTab.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(326, 34, -1, -1));
 
         jLabel35.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel35.setText("Sales List");
+        salesTab.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 78, -1, -1));
 
         jTable5.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "CLIENT", "TYPE", "BLOCK", "LOT"
+                "ID", "CLIENT", "TYPE", "BLOCK", "LOT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                true, true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1051,57 +1089,59 @@ public class AdminPage extends javax.swing.JFrame {
         jTable5.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(jTable5);
         if (jTable5.getColumnModel().getColumnCount() > 0) {
-            jTable5.getColumnModel().getColumn(1).setResizable(false);
             jTable5.getColumnModel().getColumn(2).setResizable(false);
             jTable5.getColumnModel().getColumn(3).setResizable(false);
+            jTable5.getColumnModel().getColumn(4).setResizable(false);
         }
+
+        salesTab.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 260, 650, 130));
 
         jTable6.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "CLIENT", "TYPE", "BLOCK", "LOT"
+                "ID", "CLIENT", "TYPE", "BLOCK", "LOT"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                true, true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1111,45 +1151,45 @@ public class AdminPage extends javax.swing.JFrame {
         jTable6.getTableHeader().setReorderingAllowed(false);
         jScrollPane6.setViewportView(jTable6);
         if (jTable6.getColumnModel().getColumnCount() > 0) {
-            jTable6.getColumnModel().getColumn(1).setResizable(false);
             jTable6.getColumnModel().getColumn(2).setResizable(false);
             jTable6.getColumnModel().getColumn(3).setResizable(false);
+            jTable6.getColumnModel().getColumn(4).setResizable(false);
         }
 
+        salesTab.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 420, 650, 140));
+
         jLabel36.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel36.setText("Properties List");
+        jLabel36.setText("Lot List");
+        salesTab.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 400, 110, -1));
 
         jLabel37.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel37.setText("Client List");
+        salesTab.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 240, -1, -1));
 
         jLabel30.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel30.setText("Status:");
+        salesTab.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, -1, -1));
 
-        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sold", "Reserved" }));
+        salesStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sold", "Reserved" }));
+        salesTab.add(salesStatus, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 160, 80, -1));
 
-        jButton12.setBackground(new java.awt.Color(0, 204, 51));
-        jButton12.setText("ADD");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        salesAddBtn.setBackground(new java.awt.Color(0, 204, 51));
+        salesAddBtn.setText("ADD");
+        salesAddBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                salesAddBtnActionPerformed(evt);
             }
         });
+        salesTab.add(salesAddBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 200, 140, -1));
 
-        jButton13.setBackground(new java.awt.Color(51, 153, 255));
-        jButton13.setText("EDIT");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
+        salesRemoveBtn.setBackground(new java.awt.Color(255, 51, 0));
+        salesRemoveBtn.setText("REMOVE");
+        salesRemoveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
+                salesRemoveBtnActionPerformed(evt);
             }
         });
-
-        jButton14.setBackground(new java.awt.Color(255, 51, 0));
-        jButton14.setText("REMOVE");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
-            }
-        });
+        salesTab.add(salesRemoveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, 140, -1));
 
         jButton16.setBackground(new java.awt.Color(242, 243, 133));
         jButton16.setText("MANAGE CLIENT");
@@ -1158,110 +1198,16 @@ public class AdminPage extends javax.swing.JFrame {
                 jButton16ActionPerformed(evt);
             }
         });
+        salesTab.add(jButton16, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 570, -1, -1));
 
         jButton17.setBackground(new java.awt.Color(242, 243, 133));
-        jButton17.setText("MANAGE PROPERTIES");
+        jButton17.setText("MANAGE LOT");
         jButton17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton17ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout salesTabLayout = new javax.swing.GroupLayout(salesTab);
-        salesTab.setLayout(salesTabLayout);
-        salesTabLayout.setHorizontalGroup(
-            salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salesTabLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(salesTabLayout.createSequentialGroup()
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel31)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, salesTabLayout.createSequentialGroup()
-                                .addComponent(jLabel28)
-                                .addGap(22, 22, 22)))
-                        .addGap(14, 14, 14)
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                            .addComponent(jTextField18, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))
-                    .addGroup(salesTabLayout.createSequentialGroup()
-                        .addComponent(jLabel32)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField20, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(salesTabLayout.createSequentialGroup()
-                        .addComponent(jLabel30)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(salesTabLayout.createSequentialGroup()
-                        .addComponent(jLabel35)
-                        .addGap(0, 156, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel37)
-                    .addComponent(jButton16))
-                .addGap(18, 18, 18)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton17))
-                .addGap(24, 24, 24))
-            .addGroup(salesTabLayout.createSequentialGroup()
-                .addGap(326, 326, 326)
-                .addComponent(jLabel33)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        salesTabLayout.setVerticalGroup(
-            salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(salesTabLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addComponent(jLabel33)
-                .addGap(63, 63, 63)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel36, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel35)
-                        .addComponent(jLabel37)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(salesTabLayout.createSequentialGroup()
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel28)
-                            .addComponent(jTextField18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel31)
-                            .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel32)
-                            .addComponent(jTextField20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel30)
-                            .addComponent(jComboBox8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton14))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(salesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton16)
-                    .addComponent(jButton17))
-                .addContainerGap(119, Short.MAX_VALUE))
-        );
+        salesTab.add(jButton17, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 570, -1, -1));
 
         jTabbedPane.addTab("tab4", salesTab);
 
@@ -1284,10 +1230,6 @@ public class AdminPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_managePropertyRemoveBtnActionPerformed
 
-    private void managePropertyEditBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managePropertyEditBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_managePropertyEditBtnActionPerformed
-
     private void managePropertyAddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managePropertyAddBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_managePropertyAddBtnActionPerformed
@@ -1298,49 +1240,103 @@ public class AdminPage extends javax.swing.JFrame {
 
     private void viewPropertyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPropertyBtnActionPerformed
         // TODO add your handling code here:
-        jTabbedPane.setSelectedIndex(1); 
+        jTabbedPane.setSelectedIndex(1);
+        populateTable();
     }//GEN-LAST:event_viewPropertyBtnActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
 
     private void clientBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clientBtn1ActionPerformed
         // TODO add your handling code here:
-        jTabbedPane.setSelectedIndex(3); 
+        jTabbedPane.setSelectedIndex(3);
+        loadData(); 
     }//GEN-LAST:event_clientBtn1ActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+   
+    
+    private void salesAddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salesAddBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
+        
+        int statusInt = 0;
+        String statusInput = salesStatus.getSelectedItem().toString();
+        Integer clientId = salesClientId.getText().trim().isEmpty() ? null : Integer.parseInt(salesClientId.getText());
+        Integer lotId = salesLotId.getText().trim().isEmpty() ? null : Integer.parseInt(salesLotId.getText());
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton13ActionPerformed
+        if (clientId == null && lotId == null) {
+            JOptionPane.showMessageDialog(this, "Please select both a Client and a Lot.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton14ActionPerformed
+        int selectedRow = jTable6.getSelectedRow();
+        
+        DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
+        
+        if (statusInput == "Sold") 
+            statusInt = 2;
+        else if (statusInput == "Reserved") 
+            statusInt = 3;
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object existingClientId = model.getValueAt(i, 1);
+            Object existingLotId = model.getValueAt(i, 2);
+            String status = jTable6.getValueAt(selectedRow, 7).toString();
+                        
+            if (status == "Available") {
+                if (existingClientId != null && existingLotId != null) {
+                    String existingClientStr = existingClientId.toString();
+                    String existingLotStr = existingLotId.toString();
+                    String clientStr = clientId.toString();
+                    String lotStr = lotId.toString();
 
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+                    if (existingClientStr.equals(clientStr) && existingLotStr.equals(lotStr)) {
+                        JOptionPane.showMessageDialog(this, "This sale record already exists.", "Duplicate Entry", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    if (!existingClientStr.equals(clientStr) && existingLotStr.equals(lotStr)) {
+                        JOptionPane.showMessageDialog(this, "This lot is already owned by another client.", "Lot Already Owned", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "This lot is not available.", "Lot Already Owned", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        subdivision.addSalesById(clientId, lotId, statusInt);
+        
+
+        loadData();
+    }//GEN-LAST:event_salesAddBtnActionPerformed
+
+    private void salesRemoveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salesRemoveBtnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton15ActionPerformed
+        int selectedRow = jTable4.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a sale to remove.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object clientObj = jTable4.getValueAt(selectedRow, 1);
+        Object lotObj = jTable4.getValueAt(selectedRow, 2);
+
+        if (clientObj == null || lotObj == null || !clientObj.toString().matches("\\d+") || !lotObj.toString().matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Invalid data. Please check the table values.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        int clientId = Integer.parseInt(clientObj.toString());
+        int lotId = Integer.parseInt(lotObj.toString());
+
+        subdivision.removeSalesById(clientId, lotId);
+
+        loadData();
+    }//GEN-LAST:event_salesRemoveBtnActionPerformed
+
+    private void viewSearchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewSearchBtnActionPerformed
+        // TODO add your handling code here:
+        populateTableFiltered();
+    }//GEN-LAST:event_viewSearchBtnActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         // TODO add your handling code here:
@@ -1350,10 +1346,6 @@ public class AdminPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton17ActionPerformed
 
-    private void managePropertyBackyardCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managePropertyBackyardCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_managePropertyBackyardCheckBoxActionPerformed
-
     private void managePropertySwimmingPoolCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_managePropertySwimmingPoolCheckBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_managePropertySwimmingPoolCheckBoxActionPerformed
@@ -1362,17 +1354,34 @@ public class AdminPage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_managePropertyGarageCheckBoxActionPerformed
 
-    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+    private void viewGarageCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewGarageCheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox4ActionPerformed
+    }//GEN-LAST:event_viewGarageCheckBoxActionPerformed
 
-    private void jCheckBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox5ActionPerformed
+    private void viewPoolCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPoolCheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox5ActionPerformed
+    }//GEN-LAST:event_viewPoolCheckBoxActionPerformed
 
-    private void jCheckBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox6ActionPerformed
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox6ActionPerformed
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void viewResetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewResetBtnActionPerformed
+        // TODO add your handling code here:
+        viewBlockComboBox.setSelectedIndex(0);
+        viewLotComboBox.setSelectedIndex(0);
+        viewTypeComboBox.setSelectedIndex(0);
+        viewSizeTextField.setText("");
+        viewPriceTextField.setText("");
+        viewPoolCheckBox.setSelected(false);
+        viewGarageCheckBox.setSelected(false);
+
+        populateTable();
+    }//GEN-LAST:event_viewResetBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1415,38 +1424,22 @@ public class AdminPage extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clientBtn;
     private javax.swing.JButton clientBtn1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JCheckBox jCheckBox6;
-    private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
@@ -1474,25 +1467,13 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
     private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField17;
-    private javax.swing.JTextField jTextField18;
-    private javax.swing.JTextField jTextField19;
-    private javax.swing.JTextField jTextField20;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JPanel manageClientTab;
     private javax.swing.JButton managePropertyAddBtn;
     private javax.swing.JLabel managePropertyAddFeatLabel;
-    private javax.swing.JCheckBox managePropertyBackyardCheckBox;
     private javax.swing.JComboBox<String> managePropertyBlockComboBox;
     private javax.swing.JLabel managePropertyBlockLabel;
     private javax.swing.JButton managePropertyBtn;
-    private javax.swing.JButton managePropertyEditBtn;
     private javax.swing.JCheckBox managePropertyGarageCheckBox;
-    private javax.swing.JLabel managePropertyIdLabel;
-    private javax.swing.JTextField managePropertyIdTextField;
     private javax.swing.JLabel managePropertyLotLabel;
     private javax.swing.JTextField managePropertyLotTextField;
     private javax.swing.JLabel managePropertyPriceLabel;
@@ -1505,9 +1486,23 @@ public class AdminPage extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> managePropertyTypeComboBox;
     private javax.swing.JLabel managePropertyTypeLabel;
     private javax.swing.JButton managePropertyViewTableBtn;
+    private javax.swing.JButton salesAddBtn;
+    private javax.swing.JTextField salesClientId;
+    private javax.swing.JTextField salesLotId;
+    private javax.swing.JButton salesRemoveBtn;
+    private javax.swing.JComboBox<String> salesStatus;
     private javax.swing.JPanel salesTab;
     private javax.swing.JPanel sideNav;
+    private javax.swing.JComboBox<String> viewBlockComboBox;
+    private javax.swing.JCheckBox viewGarageCheckBox;
+    private javax.swing.JComboBox<String> viewLotComboBox;
+    private javax.swing.JCheckBox viewPoolCheckBox;
+    private javax.swing.JTextField viewPriceTextField;
     private javax.swing.JButton viewPropertyBtn;
     private javax.swing.JPanel viewPropertyTab;
+    private javax.swing.JButton viewResetBtn;
+    private javax.swing.JButton viewSearchBtn;
+    private javax.swing.JTextField viewSizeTextField;
+    private javax.swing.JComboBox<String> viewTypeComboBox;
     // End of variables declaration//GEN-END:variables
 }

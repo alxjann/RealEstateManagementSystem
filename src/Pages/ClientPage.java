@@ -4,8 +4,14 @@
  */
 package Pages;
 
-import Property.Subdivision;
+import Client.Client;
+import Subdivision.Subdivision;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -17,12 +23,16 @@ public class ClientPage extends javax.swing.JFrame {
     /**
      * Creates new form ClientPage
      */
+    Subdivision subdivision = Subdivision.getInstance();
+    Client loggedInClient = Client.getLoggedInClient();
+    
     public ClientPage() {
         initComponents();
         setPreferredSize(new Dimension(1056, 630)); 
         setResizable(false);
         setLocationRelativeTo(null);
         populateTable();
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     }
 
     /**
@@ -51,6 +61,10 @@ public class ClientPage extends javax.swing.JFrame {
         lotLabel = new javax.swing.JLabel();
         buyBtn = new javax.swing.JButton();
         reserveBtn = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        poolCheckBox = new javax.swing.JCheckBox();
+        garageCheckBox = new javax.swing.JCheckBox();
+        ownedLots = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1056, 630));
@@ -98,10 +112,31 @@ public class ClientPage extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "BLOCK", "LOT", "TYPE", "SIZE", "PRICE", "STATUS"
+                "BLOCK", "LOT", "TYPE", "AMENITIES", "SIZE", "PRICE", "STATUS"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(20);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(20);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(200);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
+            jTable1.getColumnModel().getColumn(5).setResizable(false);
+            jTable1.getColumnModel().getColumn(6).setResizable(false);
+        }
 
         lotComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20" }));
 
@@ -109,11 +144,40 @@ public class ClientPage extends javax.swing.JFrame {
         lotLabel.setText("LOT");
 
         buyBtn.setText("BUY");
+        buyBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buyBtnActionPerformed(evt);
+            }
+        });
 
         reserveBtn.setText("RESERVE");
         reserveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 reserveBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel17.setText("Additional Features:");
+
+        poolCheckBox.setText("Swimming Pool");
+        poolCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                poolCheckBoxActionPerformed(evt);
+            }
+        });
+
+        garageCheckBox.setText("Garage");
+        garageCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                garageCheckBoxActionPerformed(evt);
+            }
+        });
+
+        ownedLots.setText("VIEW OWNED LOTS");
+        ownedLots.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ownedLotsActionPerformed(evt);
             }
         });
 
@@ -125,9 +189,11 @@ public class ClientPage extends javax.swing.JFrame {
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(reserveBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buyBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(reserveBtn))
+                        .addComponent(ownedLots))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 937, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(blockLabel)
@@ -152,8 +218,14 @@ public class ClientPage extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(searchBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(resetBtn)))
-                .addContainerGap(69, Short.MAX_VALUE))
+                        .addComponent(resetBtn))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(poolCheckBox)
+                        .addGap(18, 18, 18)
+                        .addComponent(garageCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,24 +244,40 @@ public class ClientPage extends javax.swing.JFrame {
                     .addComponent(priceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchBtn)
                     .addComponent(resetBtn))
-                .addGap(36, 36, 36)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(poolCheckBox)
+                    .addComponent(garageCheckBox))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buyBtn)
+                    .addComponent(ownedLots)
                     .addComponent(reserveBtn))
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 1092, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 630, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();
@@ -197,8 +285,124 @@ public class ClientPage extends javax.swing.JFrame {
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         // TODO add your handling code here:
-        Subdivision subdivision = Subdivision.getInstance();
     
+        populateTableFiltered();
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+    // TODO add your handling code here:
+        blockComboBox.setSelectedIndex(0);
+        lotComboBox.setSelectedIndex(0);
+        typeComboBox.setSelectedIndex(0);
+        sizeTextField.setText("");
+        priceTextField.setText("");
+        poolCheckBox.setSelected(false);
+        garageCheckBox.setSelected(false);
+        
+        populateTable();
+    }//GEN-LAST:event_resetBtnActionPerformed
+
+    private void reserveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reserveBtnActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow == -1) return;
+        
+        int id = (int) jTable1.getValueAt(selectedRow, 0);
+        String status = jTable1.getValueAt(selectedRow, 7).toString();
+        
+        if (subdivision.getLotOwnerById(id) != null) {
+            if (loggedInClient.getId() != subdivision.getLotOwnerById(id).getId()) {
+               if (status == "Reserved") {
+                    JOptionPane.showMessageDialog(this, "THIS LOT IS RESERVED BY OTHER CLIENT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                } else if (status == "Sold") {
+                    JOptionPane.showMessageDialog(this, "THIS LOT IS ALREADY OWNED BY A DIFFERENT CLIENT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                }
+                return;
+            } else {
+                if (status == "Reserved") {
+                    JOptionPane.showMessageDialog(this, "YOU ALREADY RESERVED THIS LOT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                } else if (status == "Sold") {
+                    JOptionPane.showMessageDialog(this, "YOU ALREADY OWNED THIS LOT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+            }
+        }
+        subdivision.addSalesById(loggedInClient.getId(), id, 3);
+        subdivision.setLotAvailabilityById(id, 3, loggedInClient, "add");
+        populateTableFiltered();
+    }//GEN-LAST:event_reserveBtnActionPerformed
+
+    private void buyBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyBtnActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        
+        if (selectedRow == -1) return;
+    
+        int id = (int) jTable1.getValueAt(selectedRow, 0);
+        String status = jTable1.getValueAt(selectedRow, 7).toString();
+        
+        if (subdivision.getLotOwnerById(id) != null) {
+            if (loggedInClient.getId() != subdivision.getLotOwnerById(id).getId()) {
+                if (status == "Reserved") {
+                    JOptionPane.showMessageDialog(this, "THIS LOT IS RESERVED BY OTHER CLIENT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                } else if (status == "Sold") {
+                    JOptionPane.showMessageDialog(this, "THIS LOT IS ALREADY OWNED BY A DIFFERENT CLIENT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                }
+                return;
+            } else {
+                if (status == "Sold") {
+                    JOptionPane.showMessageDialog(this, "YOU ALREADY OWNED THIS LOT", "MESSAGE", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+            }
+        }
+        subdivision.addSalesById(loggedInClient.getId(), id, 2);
+        subdivision.setLotAvailabilityById(id, 2, loggedInClient, "add");
+        populateTableFiltered();
+    }//GEN-LAST:event_buyBtnActionPerformed
+
+    private void poolCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poolCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_poolCheckBoxActionPerformed
+
+    private void garageCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_garageCheckBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_garageCheckBoxActionPerformed
+
+    private void ownedLotsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownedLotsActionPerformed
+        // TODO add your handling code here:
+        JFrame newFrame = new JFrame("Owned Lots");
+        newFrame.setSize(1000, 700);
+        newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        newFrame.setLocationRelativeTo(null);
+        newFrame.setResizable(false);
+
+        String[] columnNames = {"ID", "BLOCK", "LOT", "TYPE", "AMENITIES", "SIZE", "PRICE", "STATUS"};
+
+        Object[][] data = subdivision.getLoggedInClientOwnedLotsData();
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        JTable table = new JTable(model);
+
+        table.getColumnModel().getColumn(0);
+        table.getColumnModel().getColumn(1);
+        table.getColumnModel().getColumn(2);
+        table.getColumnModel().getColumn(3);
+        table.getColumnModel().getColumn(4);
+        table.getColumnModel().getColumn(5);
+        table.getColumnModel().getColumn(6);
+        table.getColumnModel().getColumn(7);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        newFrame.add(scrollPane, BorderLayout.CENTER);
+
+        newFrame.setVisible(true);
+    }//GEN-LAST:event_ownedLotsActionPerformed
+
+    private void populateTableFiltered() {
         String blockInput = (String) blockComboBox.getSelectedItem();
         String lotInput = (String) lotComboBox.getSelectedItem();
         String typeInput = (String) typeComboBox.getSelectedItem();
@@ -210,38 +414,50 @@ public class ClientPage extends javax.swing.JFrame {
         String houseType = (typeInput == null || typeInput.trim().isEmpty()) ? null : typeInput;
         Double minSize = (sizeInput.isEmpty() || sizeInput.trim().isEmpty()) ? null : Double.parseDouble(sizeInput);
         Double minPrice = (priceInput.isEmpty() || priceInput.trim().isEmpty()) ? null : Double.parseDouble(priceInput);
+        Boolean hasSwimmingPool = poolCheckBox.isSelected();
+        Boolean hasGarage = garageCheckBox.isSelected();
 
-        if (blockNumber == null && lotNumber == null && houseType == null && minSize == null && minPrice == null) {
+        
+        if (blockNumber == null && lotNumber == null && houseType == null && minSize == null && minPrice == null 
+            && !hasSwimmingPool && !hasGarage) {
+            populateTable();
             return;
         }
 
-        Object[][] filteredData = subdivision.getFilteredTableData(blockNumber, lotNumber, houseType, minSize, minPrice);
+        Object[][] filteredData = subdivision.getFilteredTableData(blockNumber, lotNumber, houseType, minSize, minPrice, hasSwimmingPool, hasGarage, false);
 
-        DefaultTableModel model = new DefaultTableModel(filteredData, new String[]{"ID", "BLOCK", "LOT", "TYPE", "SIZE", "PRICE", "STATUS"});
+        DefaultTableModel model = new DefaultTableModel(filteredData, new String[]{"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS"});
         jTable1.setModel(model);
-    }//GEN-LAST:event_searchBtnActionPerformed
-
-    private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-    // TODO add your handling code here:
-        blockComboBox.setSelectedIndex(0);
-        typeComboBox.setSelectedIndex(0);
-        sizeTextField.setText("");
-        priceTextField.setText("");
-
-        populateTable();
-    }//GEN-LAST:event_resetBtnActionPerformed
-
-    private void reserveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reserveBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_reserveBtnActionPerformed
+        
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable1.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable1.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(7).setPreferredWidth(100);
+    }
+    
     private void populateTable() {
-        Subdivision subdivision = Subdivision.getInstance();
-        String[] columnNames = {"ID", "BLOCK", "LOT", "TYPE", "SIZE", "PRICE", "STATUS"};
+        String[] columnNames = {"ID", "BLOCK", "LOT", "TYPE", "AMENITIES" , "SIZE", "PRICE", "STATUS"};
 
-        Object[][] data = subdivision.getTableData();
+        Object[][] data = subdivision.getTableData(false);
 
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        
+        
+        
         jTable1.setModel(model);
+        
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(80);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(130);
+        jTable1.getColumnModel().getColumn(4).setPreferredWidth(245);
+        jTable1.getColumnModel().getColumn(5).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(6).setPreferredWidth(100);
+        jTable1.getColumnModel().getColumn(7).setPreferredWidth(100);
     }   
     /**
      * @param args the command line arguments
@@ -282,11 +498,15 @@ public class ClientPage extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> blockComboBox;
     private javax.swing.JLabel blockLabel;
     private javax.swing.JButton buyBtn;
+    private javax.swing.JCheckBox garageCheckBox;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JComboBox<String> lotComboBox;
     private javax.swing.JLabel lotLabel;
+    private javax.swing.JButton ownedLots;
+    private javax.swing.JCheckBox poolCheckBox;
     private javax.swing.JLabel priceLabel;
     private javax.swing.JTextField priceTextField;
     private javax.swing.JButton reserveBtn;

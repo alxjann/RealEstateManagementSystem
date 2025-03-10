@@ -12,7 +12,12 @@ import House.House;
  */
 public class Bungalow extends House {
 
-    public Bungalow(int roomCount, int floorCount, boolean hasSwimmingPool, boolean hasGarage) {
-        super("Bungalow", roomCount, floorCount, hasSwimmingPool, hasGarage);
+    public Bungalow(boolean hasSwimmingPool, boolean hasGarage) {
+        super(hasSwimmingPool, hasGarage);
     } 
+
+    @Override
+    public String getTypeName() {
+        return "Bungalow";
+    }
 }
